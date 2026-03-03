@@ -19,30 +19,31 @@ def load_payments():
 def payments_panel():
     rows = load_payments()
 
-    html = """
+    html_header = """
     <html>
     <head>
-        <title>Panel Płatności</title>
+        <title>Panel płatności</title>
         <link rel="stylesheet"
-              href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     </head>
     <body class="p-4">
-        <h2 class="mb-4">Panel Admina — BLIK Level 0</h2>
+        <h2 class="mb-4">Panel admina — BLIK Level 0</h2>
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>User ID</th>
                     <th>ID Transakcji</th>
                     <th>Status</th>
-                    <th>Kwota (PLN)</th>
+                    <th>Kwota</th>
                     <th>Data</th>
                 </tr>
             </thead>
             <tbody>
     """
 
+    html_rows = ""
     for r in rows:
-        html += f"""
+        html_rows += f"""
             <tr>
                 <td>{r[0]}</td>
                 <td>{r[1]}</td>
@@ -52,11 +53,11 @@ def payments_panel():
             </tr>
         """
 
-    html += """
+    html_footer = """
             </tbody>
         </table>
     </body>
     </html>
     """
 
-    return html
+    return HTMLResponse(content=html_header + html_rows + html_footer)
