@@ -1,11 +1,14 @@
 from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
-import sqlite3
+import sqlite3, os
 
 router = APIRouter()
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "..", "db.sqlite")
+
 def load_payments():
-    conn = sqlite3.connect("db.sqlite")
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     cur.execute(
         "SELECT user_id, transaction_id, status, amount, created_at "
@@ -19,15 +22,14 @@ def load_payments():
 def payments_panel():
     rows = load_payments()
 
-    html_header = """
+    html = """
     <html>
     <head>
-        <title>Panel płatności</title>
-        <link rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <title>Panel Płatności</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     </head>
     <body class="p-4">
-        <h2 class="mb-4">Panel admina — BLIK Level 0</h2>
+        <h2 class="mb-4">Panel Admina — BLIK Level 0</h2>
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -41,23 +43,22 @@ def payments_panel():
             <tbody>
     """
 
-    html_rows = ""
     for r in rows:
-        html_rows += f"""
-            <tr>
-                <td>{r[0]}</td>
-                <td>{r[1]}</td>
-                <td>{r[2]}</td>
-                <td>{r[3]}</td>
-                <td>{r[4]}</td>
-            </tr>
+        html += f"""
+        <tr>
+            <td>{r[0]}</td>
+            <td>{r[1]}</td>
+            <td>{r[2]}</td>
+            <td>{r[3]}</td>
+            <td>{r[4]}</td>
+        </tr>
         """
 
-    html_footer = """
+    html += """
             </tbody>
         </table>
     </body>
     </html>
     """
 
-    return HTMLResponse(content=html_header + html_rows + html_footer)
+    return HTMLResponse(content=html)
