@@ -16,7 +16,7 @@ user_states = {}
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Bot działa! Użyj /pay aby rozpocząć płatność testową BLIK Level 0."
+        "Bot działa! Użyj /pay aby rozpocząć płatność testową."
     )
 
 async def pay(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -61,7 +61,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del user_states[user_id]
         return
 
-    await update.message.reply_text("Użyj /pay aby rozpocząć płatność.")
+    await update.message.reply_text("Użyj /pay aby rozpocząć.")
 
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
