@@ -2,11 +2,11 @@ import os
 import httpx
 from telegram import Update
 from telegram.ext import (
-    ApplicationBuilder, 
-    CommandHandler, 
-    MessageHandler, 
-    filters, 
-    ContextTypes
+    ApplicationBuilder,
+    CommandHandler,
+    MessageHandler,
+    ContextTypes,
+    filters
 )
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -16,7 +16,7 @@ user_states = {}
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Bot działa! Użyj /pay aby rozpocząć płatność."
+        "Bot działa! Użyj /pay aby rozpocząć płatność testową BLIK Level 0."
     )
 
 async def pay(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -27,6 +27,7 @@ async def pay(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"{BACKEND_URL}/create_transaction",
             json={"user_id": user_id, "amount": 5.00}
         )
+
     transaction_id = r.json()["transaction_id"]
 
     user_states[user_id] = {
@@ -60,13 +61,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del user_states[user_id]
         return
 
-    await update.message.reply_text("Użyj /pay aby zacząć.")
+    await update.message.reply_text("Użyj /pay aby rozpocząć płatność.")
 
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
+
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("pay", pay))
     app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message))
+
     app.run_polling()
 
 if __name__ == "__main__":
